@@ -26,7 +26,7 @@ class RouterGenerator {
         );
       case Routes.ambulanceAdd:
         return MaterialPageRoute(
-          builder: ((context) => const AddAmbulanceScreen()),
+          builder: ((context) =>  AddAmbulanceScreen()),
         );
       case Routes.home:
         return MaterialPageRoute(
