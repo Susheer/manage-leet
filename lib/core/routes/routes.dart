@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_management/pages/add_ambulance.dart';
 import 'package:task_management/pages/home.dart';
 import 'package:task_management/pages/onboarding.dart';
 import 'package:task_management/pages/today_task.dart';
@@ -22,6 +23,10 @@ class RouterGenerator {
       case Routes.ambulanceList:
         return MaterialPageRoute(
           builder: ((context) => const AmbulanceListScreen()),
+        );
+      case Routes.ambulanceAdd:
+        return MaterialPageRoute(
+          builder: ((context) => const AddAmbulanceScreen()),
         );
       case Routes.home:
         return MaterialPageRoute(
