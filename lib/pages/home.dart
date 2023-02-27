@@ -194,13 +194,17 @@ class _HomeScreenState extends State<HomeScreen> {
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
+          child: GestureDetector(onTap: (){
+            Navigator.pushNamed(context, Routes.ambulanceAdd);
+               debugPrint("Add / Remove");
+           },
           child: TaskGroupContainer(
             color: Colors.orange,
             isSmall: true,
             icon: Icons.airport_shuttle,
             taskCount: 5,
             taskGroup: "Add / Remove",
-          ),
+          )),
         ),
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
