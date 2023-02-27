@@ -9,6 +9,7 @@ class Routes {
   static const home = "/home";
   static const todaysTask = "/task/todays";
   static const ambulanceList = "/ambulance/list";
+  static const ambulanceAdd = "/ambulance/add";
 }
 
 class RouterGenerator {
