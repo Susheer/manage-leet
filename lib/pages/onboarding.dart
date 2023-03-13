@@ -182,7 +182,7 @@ class _BoardingWidget extends StatelessWidget {
             height: 30,
           ),
           Text(
-            "Manage your Task",
+            "Manage Ambulances",
             style: TextStyle(
               color: Colors.grey[800],
               fontSize: 32,
@@ -193,7 +193,7 @@ class _BoardingWidget extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "Organize all your to-do's in lists and \n projects. Color tag to set them your priority and categories.",
+            "Organize, Register, Track and have complete infromation of all your ambulances from the\n single place. Get a very heigh level of information from the single place.",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.grey[500],

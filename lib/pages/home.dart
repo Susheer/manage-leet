@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "On Going",
+          "A Glance",
           style: TextStyle(
             color: Colors.blueGrey[900],
             fontWeight: FontWeight.w700,
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SelectableText(
-          "My Task",
+          "Dashboard",
           style: TextStyle(
             color: Colors.blueGrey[900],
             fontWeight: FontWeight.w700,
@@ -195,14 +195,14 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisCellCount: 1,
           child: GestureDetector(onTap: (){
             Navigator.pushNamed(context, Routes.ambulanceAdd);
-               debugPrint("Add / Remove");
+               debugPrint("Add New");
            },
           child: TaskGroupContainer(
             color: Colors.orange,
             isSmall: true,
             icon: Icons.airport_shuttle,
             taskCount: 5,
-            taskGroup: "Add / Remove",
+            taskGroup: "Register",
           )),
         ),
         StaggeredGridTile.count(
@@ -212,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.green,
             icon: Icons.corporate_fare,
             taskCount: 2,
-            taskGroup: "Orgnization",
+            taskGroup: "Authorities",
           ),
         ),
         StaggeredGridTile.count(
@@ -227,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
             isSmall: true,
             icon: Icons.view_list,
             taskCount: 9,
-            taskGroup: "View all",
+            taskGroup: "View",
           ),)
         ),
       ],
@@ -260,7 +260,7 @@ class OnGoingTask extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Startup Website Design with Responsive",
+                  "Track Ambulances through the single place",
                   style: TextStyle(
                     color: Colors.blueGrey[700],
                     fontWeight: FontWeight.bold,
@@ -303,7 +303,7 @@ class OnGoingTask extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: const Text(
-                    "Complete - 80%",
+                    "On Service - 80%",
                     style: TextStyle(
                       color: Colors.purple,
                     ),
@@ -349,17 +349,6 @@ class BottomNavClipper extends CustomClipper<Path> {
       secEndPoint.dx,
       secEndPoint.dy,
     );
-
-//     path.lineTo(size.width * 0.45, 30);
-
-//     final lastControlPoint = Offset(size.width * 0.45, 20);
-//     final lastEndPoint = Offset(size.width * 0.2, 30);
-//     path.quadraticBezierTo(
-//       lastControlPoint.dx,
-//       lastControlPoint.dy,
-//       lastEndPoint.dx,
-//       lastEndPoint.dy,
-//     );
 
     path.close();
 
