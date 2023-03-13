@@ -181,7 +181,6 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisCellCount: 1,
             mainAxisCellCount: 1.3,
             child: GestureDetector(onTap: (){
-            // Navigator.pushNamed(context, Routes.ambulanceList);
             debugPrint("Click Studying");
             },
               child: TaskGroupContainer(

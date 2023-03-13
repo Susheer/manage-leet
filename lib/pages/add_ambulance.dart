@@ -10,34 +10,38 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-const ANDROID_LOCALHOST="10.0.2.2";
-
-class AmbulanceListScreen extends StatefulWidget {
-  const AmbulanceListScreen({Key? key}) : super(key: key);
+class AddAmbulanceScreen extends StatefulWidget {
+  const AddAmbulanceScreen({Key? key}) : super(key: key);
 
   @override
-  State<AmbulanceListScreen> createState() => _AmbulanceListScreenState();
+  State<AddAmbulanceScreen> createState() => _AddAmbulanceScreenState();
 }
 
-class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
+class _AddAmbulanceScreenState extends State<AddAmbulanceScreen> {
+   Future<AmbulancePayload>? _futureAmbulance;
   final todaysDate = DateTime.now();
   late int _dateIndex;
-  final double _width = 70;
+   final TextEditingController _nameCtl = TextEditingController();
+   final TextEditingController _longCtl = TextEditingController();
+   final TextEditingController _latCtl = TextEditingController();
+   final TextEditingController _bidCtl = TextEditingController();
+   final TextEditingController _descCtl = TextEditingController();
+   late bool _isAnyFieldEmpty=false;
+
+   final double _width = 70;
   final double _margin = 15;
   final _scrollController = ScrollController();
   late int days;
 
-  final List<AmbulanceModel> _ambulanceList = [
-    AmbulanceModel(authorityDisplayName: "Self Owned",
-        description: "Descripanskcnkcnknckqwnck wqcknkcqw wqkc wqkcwq coqwc wqoc qwcoqw ction",
-        displayName: "KA-05LC5838",
-        isActive: false,
-        registredDate: 1676705447576,
-        driverName: "Mr Bansal",
-        mobileNo: "8948451168",
-        lastService:1676705447576
-    ),
-  ];
+   @override
+   void dispose() {
+     _nameCtl.dispose();
+     _longCtl.dispose();
+     _latCtl.dispose();
+     _bidCtl.dispose();
+     _descCtl.dispose();
+     super.dispose();
+   }
 
   Future<List<AmbulanceModel>>fetchAmbulanceListFromWeb() async {
     http.Response response = await http.get(Uri.parse('http://localhost:1337/ambulance'));
@@ -53,7 +57,9 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
     return ambulanceList;
   }
 
-
+  bool checkEmpty(String param){
+     return param?.isEmpty ?? true;
+  }
   List<AmbulanceModel> createAmbulanceList(List data){
     debugPrint("createAmbulanceList Invoked");
     List<AmbulanceModel> list = <AmbulanceModel>[];
@@ -104,7 +110,7 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("View All"),
+        title: const Text(""),
       ),
       body: _buildBody(context),
     );
@@ -124,7 +130,7 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
           const SizedBox(
             height: 20,
           ),
-          _buildList(),
+          _registrationForm(),
           const SizedBox(
             height: 20,
           ),
@@ -142,14 +148,14 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-            "Ambulances",
+            "Fill the details",
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(
               height: 5,
             ),
             Text(
-              "Registered in the system",
+              "Register new ambulance",
               style: Theme.of(context).textTheme.labelMedium,
             ),
           ],
@@ -159,36 +165,154 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
     );
   }
 
-  SizedBox _buildList() {
+  Widget _actionButton(final String title, VoidCallback onClickHandler){
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Colors.blue,
+        minimumSize: const Size.fromHeight(50), // NEW
+      ),
+      onPressed: () {
+        onClickHandler();
+      },
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+
+
+  SizedBox _registrationForm() {
     return SizedBox(
-      height: 500,
-      child: new FutureBuilder<List<AmbulanceModel>>(
-        future: fetchAmbulanceListFromWeb(),
-        builder: (context, snapshot) {
-          if(snapshot.hasData){
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: snapshot.data?.length,
-              controller: _scrollController,
-              itemBuilder: (context, index) {
-                return  AmbulanceWidget(ambulanceModel: snapshot.data![index]);
-              },
-            );
-          }else if (snapshot.hasError){
-            return new Text("${snapshot.error}");
-          }
-          // By default, show a loading spinner
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height:15),
-                Text("Please wait")
-              ],
-            ));
-        }
-    ));
+        height: 600,
+        child:ListView(
+        children: [
+          Column(
+            children: [
+              TextField(
+                controller: _nameCtl,
+                decoration: InputDecoration(labelText: 'Ambulance name'),
+              ),
+              TextField(
+                controller: _longCtl,
+                decoration: InputDecoration(labelText: 'Longitude value'),
+              ),
+              TextField(
+                controller: _latCtl,
+                decoration: InputDecoration(labelText: 'Latitude value'),
+              ),
+              TextField(
+                controller: _bidCtl,
+                decoration: InputDecoration(labelText: 'Business Id'),
+              ),
+            TextField(
+                controller: _descCtl,
+                decoration: InputDecoration(labelText: 'Description'),
+                keyboardType: TextInputType.multiline,
+                minLines: 3,
+            maxLines: null),
+              const SizedBox(
+                height: 60,
+              ),
+              if(_futureAmbulance == null)
+                _actionButton("Submit", () {
+                  setState(() {
+                    late String name=_nameCtl.text.toUpperCase();
+                    late String lat=_latCtl.text.toUpperCase();
+                    late String long=_longCtl.text.toUpperCase();
+                    late String desc=_descCtl.text.toUpperCase();
+                    late String bid=_bidCtl.text.toUpperCase();
+                    late bool isEmpty = checkEmpty(name) || checkEmpty(lat) || checkEmpty(long) || checkEmpty(desc)|| checkEmpty(bid);
+                    if(isEmpty){
+                      final snackbar=SnackBar(
+                        content: Text('Do not miss any detais'),
+                        duration: Duration(seconds: 2),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    }
+                    else{
+                      _futureAmbulance = createAmbulance(name, lat, long, desc, bid);
+                    }
+                  });
+                }),
+              if(_futureAmbulance != null)
+                FutureBuilder<AmbulancePayload>(
+                  future: _futureAmbulance,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          Text("Ambulance created"),
+                          SizedBox(height:15),
+                          _actionButton("Refresh", () {
+                            setState(() {
+                              _nameCtl.clear();
+                              _longCtl.clear();
+                              _bidCtl.clear();
+                              _descCtl.clear();
+                              _latCtl.clear();
+                              _futureAmbulance = null;
+                            });
+                          }),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      debugPrint(snapshot.toString());
+                      return Text("${snapshot.error}");
+                    }
+
+                    return Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height:15),
+                            Text("Please wait")
+                          ],
+                        );
+                  },
+                ),
+         ])
+        ])
+        );
+  }
+
+  Future<AmbulancePayload> createAmbulance(String name,String lat, String lng, String desc, String bId) async {
+    final http.Response response = await http.post(
+      Uri.parse('http://localhost:1337/ambulance'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'latitude':lat,
+        'name':name,
+        'longitude':lng,
+        'description':desc,
+        'business_id': bId
+      }),
+    );
+
+// Dispatch action depending upon
+// the server response
+    if (response.statusCode == 200) {
+      debugPrint(response.body);
+      return AmbulancePayload.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error: ${response.reasonPhrase} with ${response.statusCode}');
+    }
+  }
+
+}
+
+class  AmbulancePayload{
+  late String name;
+  AmbulancePayload({
+    required this.name,
+  });
+
+  factory AmbulancePayload.fromJson(Map<String, dynamic> json) {
+    return AmbulancePayload(
+      name: json['name']
+    );
   }
 }
+
 
