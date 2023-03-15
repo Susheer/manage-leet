@@ -48,13 +48,72 @@ class AmbulanceWidget extends StatelessWidget {
     return DateFormat.yMMM().format(dt);
   }
 
-  Widget buildRowFirst(String displayName, String driverName, bool isActive){
+  Widget getMenuList(BuildContext context, String name, bool isActive){
+    return  PopupMenuButton(
+        icon: Icon(Icons.more_vert,color: Colors.white), // add this line
+        itemBuilder: (context){
+          return [
+            PopupMenuItem<int>(
+              value: 0,
+              child: Row(
+                children: [
+                  Text("Edit")
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 1,
+              child: Row(
+                children: [
+                  Text("Delete")
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 2,
+              child: Row(
+                children: [
+                  if(isActive==true)
+                  Text("Deactivate"),
+                  if(isActive==false)
+                    Text("Activate"),
+                ],
+              ),
+            ),
+          ];
+        },
+        constraints: BoxConstraints(
+          minWidth: 30.w,
+          maxWidth: 30.w,
+        ),
+        elevation: 2,
+        onSelected:(value){
+          if(value == 0){
+            print('Edit Action ${name}');
+          }else if(value == 1){
+            print('Delete Action ${name}');
+          }else if(value == 2){
+            print('Is_ACTIVE Action ${name}');
+          }
+        }
+    );
+  }
+
+  Widget buildRowFirst(BuildContext context, String displayName, String driverName, bool isActive){
     return  Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(displayName, style: boldStyle()),
-          Text("Active", style: boldStyle()),
+    Container(
+      child: Row(
+        children: [
+        Text("Active", style: boldStyle()),
+        getMenuList(context,displayName,isActive),
+      ],
+      ),
+    )
+
         ],);
   }
   Widget buildRowSecond(String driverName, bool isActive){
@@ -114,7 +173,7 @@ class AmbulanceWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    buildRowFirst(ambulanceModel.displayName,ambulanceModel.driverName!, true),
+                    buildRowFirst(context,ambulanceModel.displayName,ambulanceModel.driverName!, true),
                     buildRowSecond(ambulanceModel.driverName!,ambulanceModel.isActive),
                     buildNormalRow("+91 ${ambulanceModel.mobileNo} ","Last trip: ${getRegisteredDate(ambulanceModel.lastService!)}" ),
                     const SizedBox(height: 6),
