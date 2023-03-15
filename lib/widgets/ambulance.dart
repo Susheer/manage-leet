@@ -4,16 +4,27 @@ import 'package:task_management/core/res/color.dart';
 import 'package:task_management/models/ambulance.dart';
 import 'package:task_management/models/task.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:task_management/widgets/loading_spinner.dart';
 
 const darkColor = Color(0xFF49535C);
 class AmbulanceWidget extends StatelessWidget {
   final AmbulanceModel ambulanceModel;
-  const AmbulanceWidget({
+  AmbulanceWidget({
     Key? key,
     required this.ambulanceModel,
   }) : super(key: key);
 
+  Future deleteAmbulance(String name) async {
+    bool flag=false;
+    http.Response response = await http.delete(Uri.parse('http://localhost:1337/ambulance/${name}'));
+    print("StatusCode ${response.statusCode}");
+    if(response.statusCode==200){
+     flag=true;
+    }
+    return flag;
+  }
 
   TextStyle buildMontserrat(
       Color color, {
@@ -87,11 +98,19 @@ class AmbulanceWidget extends StatelessWidget {
           maxWidth: 30.w,
         ),
         elevation: 2,
-        onSelected:(value){
+        onSelected:(value) async {
           if(value == 0){
             print('Edit Action ${name}');
           }else if(value == 1){
+            FocusScope.of(context).unfocus();
+            Spinner(context).startLoading();
             print('Delete Action ${name}');
+            bool result = await deleteAmbulance(name);
+            print('Delete Result ${result}');
+            if(result==false) {
+              Spinner(context).showError("Something went wrong");
+            }
+            Spinner(context).stopLoading();
           }else if(value == 2){
             print('Is_ACTIVE Action ${name}');
           }
