@@ -40,9 +40,6 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
     }else {
       ambulanceList = [];
     }
-    // setState(() {
-    //   _ambulanceList=ambulanceList;
-    // });
     return ambulanceList;
   }
 
@@ -159,14 +156,18 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
         future: fetchAmbulanceListFromWeb(),
         builder: (context, snapshot) {
           if(snapshot.hasData){
+            _ambulanceList=snapshot.data!;
             return ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: snapshot.data?.length,
+              itemCount: _ambulanceList?.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
                 return  AmbulanceWidget(onDelete: (String name){
                   debugPrint('Record deleted ${name}');
-                },ambulanceModel: snapshot.data![index]);
+                  setState(() {
+                    _ambulanceList.removeWhere((ambulance) => ambulance.displayName == name);
+                  });
+                },ambulanceModel: _ambulanceList[index]);
               },
             );
           }else if (snapshot.hasError){

@@ -102,20 +102,18 @@ class AmbulanceWidget extends StatelessWidget {
         elevation: 2,
         onSelected:(value) async {
           if(value == 0){
-            print('Edit Action ${name}');
+            print('Edit Action ${name}'); // @todo
           }else if(value == 1){
             FocusScope.of(context).unfocus();
             Spinner(context).startLoading();
-            print('Delete Action ${name}');
             bool result = await deleteAmbulance(name);
-            print('Delete Result ${result}');
             if(result==false) {
               Spinner(context).showError("Something went wrong");
             }
-            onDelete(name);
+            onDelete(name); // refresh the list
             Spinner(context).stopLoading();
           }else if(value == 2){
-            print('Is_ACTIVE Action ${name}');
+            print('Is_ACTIVE Action ${name}'); // @todo
           }
         }
     );
