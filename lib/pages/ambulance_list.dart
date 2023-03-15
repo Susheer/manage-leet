@@ -27,17 +27,7 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
   final _scrollController = ScrollController();
   late int days;
 
-  final List<AmbulanceModel> _ambulanceList = [
-    AmbulanceModel(authorityDisplayName: "Self Owned",
-        description: "Descripanskcnkcnknckqwnck wqcknkcqw wqkc wqkcwq coqwc wqoc qwcoqw ction",
-        displayName: "KA-05LC5838",
-        isActive: false,
-        registredDate: 1676705447576,
-        driverName: "Mr Bansal",
-        mobileNo: "8948451168",
-        lastService:1676705447576
-    ),
-  ];
+   List<AmbulanceModel> _ambulanceList = [];
 
   Future<List<AmbulanceModel>>fetchAmbulanceListFromWeb() async {
     http.Response response = await http.get(Uri.parse('http://localhost:1337/ambulance'));
@@ -50,6 +40,9 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
     }else {
       ambulanceList = [];
     }
+    // setState(() {
+    //   _ambulanceList=ambulanceList;
+    // });
     return ambulanceList;
   }
 
@@ -171,7 +164,9 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
               itemCount: snapshot.data?.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
-                return  AmbulanceWidget(ambulanceModel: snapshot.data![index]);
+                return  AmbulanceWidget(onDelete: (String name){
+                  debugPrint('Record deleted ${name}');
+                },ambulanceModel: snapshot.data![index]);
               },
             );
           }else if (snapshot.hasError){

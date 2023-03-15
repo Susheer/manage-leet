@@ -11,9 +11,11 @@ import 'package:task_management/widgets/loading_spinner.dart';
 const darkColor = Color(0xFF49535C);
 class AmbulanceWidget extends StatelessWidget {
   final AmbulanceModel ambulanceModel;
+  final Function(String value) onDelete;
   AmbulanceWidget({
     Key? key,
     required this.ambulanceModel,
+    required this.onDelete,
   }) : super(key: key);
 
   Future deleteAmbulance(String name) async {
@@ -110,6 +112,7 @@ class AmbulanceWidget extends StatelessWidget {
             if(result==false) {
               Spinner(context).showError("Something went wrong");
             }
+            onDelete(name);
             Spinner(context).stopLoading();
           }else if(value == 2){
             print('Is_ACTIVE Action ${name}');
