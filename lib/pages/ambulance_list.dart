@@ -162,12 +162,23 @@ class _AmbulanceListScreenState extends State<AmbulanceListScreen> {
               itemCount: _ambulanceList?.length,
               controller: _scrollController,
               itemBuilder: (context, index) {
-                return  AmbulanceWidget(onDelete: (String name){
+                return  AmbulanceWidget(
+                    onDelete: (String name){
                   debugPrint('Record deleted ${name}');
                   setState(() {
                     _ambulanceList.removeWhere((ambulance) => ambulance.displayName == name);
                   });
-                },ambulanceModel: _ambulanceList[index]);
+                },
+                   onStateToggle: (String name, bool state){
+                     debugPrint('Record toggled ${name} state ${state}');
+                     var index=_ambulanceList.indexWhere((ambulance) => ambulance.displayName == name);
+                     AmbulanceModel amb= _ambulanceList[index];
+                     amb.setActive=state;
+                     setState(() {
+                       _ambulanceList[index]=amb;
+                     });
+                   },
+                    ambulanceModel: _ambulanceList[index]);
               },
             );
           }else if (snapshot.hasError){
