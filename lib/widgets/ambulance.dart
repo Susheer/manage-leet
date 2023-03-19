@@ -5,6 +5,7 @@ import 'package:task_management/models/ambulance.dart';
 import 'package:task_management/models/task.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:task_management/widgets/loading_spinner.dart';
 
@@ -12,10 +13,12 @@ const darkColor = Color(0xFF49535C);
 class AmbulanceWidget extends StatelessWidget {
   final AmbulanceModel ambulanceModel;
   final Function(String value) onDelete;
+  final Function(String name, bool state) onStateToggle;
   AmbulanceWidget({
     Key? key,
     required this.ambulanceModel,
     required this.onDelete,
+    required this.onStateToggle,
   }) : super(key: key);
 
   Future deleteAmbulance(String name) async {
@@ -24,6 +27,24 @@ class AmbulanceWidget extends StatelessWidget {
     print("StatusCode ${response.statusCode}");
     if(response.statusCode==200){
      flag=true;
+    }
+    return flag;
+  }
+
+  Future toggleIsActivate(bool state,String name) async {
+    bool flag=false;
+    http.Response response = await http.put(
+        Uri.parse('http://localhost:1337/ambulance/name/${name}/active/${state}'),
+        headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        },
+       body: jsonEncode(<String, String>{
+         "longitude":"26.0363741",
+         "latitude":"81.7135852"
+      })
+    );
+    if(response.statusCode==200 || response.statusCode==202){
+      flag=true;
     }
     return flag;
   }
@@ -113,7 +134,15 @@ class AmbulanceWidget extends StatelessWidget {
             onDelete(name); // refresh the list
             Spinner(context).stopLoading();
           }else if(value == 2){
-            print('Is_ACTIVE Action ${name}'); // @todo
+            FocusScope.of(context).unfocus();
+            Spinner(context).startLoading();
+            bool result = await toggleIsActivate(!isActive, name);
+            if(result==false) {
+              Spinner(context).showError("Something went wrong");
+            }
+            onStateToggle(name,!isActive); // refresh the list
+            Spinner(context).stopLoading();
+
           }
         }
     );

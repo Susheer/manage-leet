@@ -5,66 +5,69 @@ import 'package:task_management/core/res/color.dart';
 import 'package:task_management/core/routes/routes.dart';
 import 'package:task_management/widgets/circle_gradient_icon.dart';
 import 'package:task_management/widgets/task_group.dart';
+import 'package:task_management/models/app_state.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "26, Aug 2022",
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CircleGradientIcon(
-              onTap: () {
-                Navigator.pushNamed(context, Routes.todaysTask);
-              },
-              icon: Icons.calendar_month,
-              color: Colors.purple,
-              iconSize: 24,
-              size: 40,
-            ),
-          )
-        ],
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: InkWell(
-              onTap: () {},
-              customBorder: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
+    return Consumer<AppState>(builder:(context, provider, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '26, Aug 2022 ${provider.index}',
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CircleGradientIcon(
+                onTap: () {
+                  debugPrint("Click");
+                  int number=provider.index;
+                  number=number+1;
+                  provider.updateIndex(number);
+                  //Navigator.pushNamed(context, Routes.todaysTask);
+                },
+                icon: Icons.calendar_month,
+                color: Colors.purple,
+                iconSize: 24,
+                size: 40,
               ),
-              child: const Icon(
-                Icons.menu_rounded,
+            )
+          ],
+          leading: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: InkWell(
+                onTap: () {},
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: const Icon(
+                  Icons.menu_rounded,
+                ),
               ),
             ),
           ),
         ),
-      ),
-      extendBody: true,
-      body: _buildBody(context),
-    );
-  }
+        extendBody: true,
+        body: _buildBody(context),
+      );
+    });
+   }
 
   Stack _buildBody(BuildContext context) {
     return Stack(
